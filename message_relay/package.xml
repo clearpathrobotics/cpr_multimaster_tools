@@ -20,6 +20,7 @@
   <depend>move_base_msgs</depend>
   <depend>multimaster_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>robot_localization</depend>
   <depend>roscpp</depend>
   <depend>rosgraph_msgs</depend>
   <depend>sensor_msgs</depend>

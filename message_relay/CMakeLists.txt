@@ -12,6 +12,7 @@ set(MESSAGE_PACKAGES
   move_base_msgs
   multimaster_msgs
   nav_msgs
+  robot_localization
   rosgraph_msgs
   sensor_msgs
   shape_msgs
