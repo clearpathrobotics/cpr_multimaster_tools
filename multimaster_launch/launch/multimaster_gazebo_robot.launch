@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (prorietary)
+
+\file      multimaster_robot.launch
+\authors   Paul Bovbel <pbovbel@clearpath.ai>
+\copyright Copyright (c) 2016, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, is not permitted without the
+express permission of Clearpath Robotics.
+-->
+<launch>
+  <!--
+  Configures topic/service relays for a robot instance in gazebo. Must run together with multimaster_gazebo launch to
+  implement a multimaster simulation instance.
+  -->
+
+  <!-- robot_name needs to be a unique name for this robot -->
+  <arg name="robot_name" default="$(anon robot)"/>
+  <arg name="gazebo_interface" default="$(find multimaster_launch)/config/empty.yaml"/>
+
+  <!-- Gazebo interface configuration for message_relay -->
+  <rosparam file="$(arg gazebo_interface)" command="load"/>
+  <rosparam subst_value="true">
+    from_sim:
+      to: /sim/$(arg robot_name)
+      time_offset_operation: add_offset
+      tf_prefix: $(arg robot_name)
+      prefix_operation: selective_remove
+      global_frames:
+        - map
+        - world
+
+    to_sim:
+      from: /sim/$(arg robot_name)
+      time_offset_operation: remove_offset
+      tf_prefix: $(arg robot_name)
+      prefix_operation: selective_add
+      global_frames:
+        - map
+        - world
+  </rosparam>
+
+  <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_gazebo_export_relay" respawn="true" respawn_delay="5" >
+    <param name="parameter_namespace" value="from_sim"/>
+  </node>
+
+  <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_gazebo_import_relay" respawn="true" respawn_delay="5" >
+    <param name="parameter_namespace" value="to_sim"/>
+  </node>
+
+</launch>

@@ -1,0 +1,30 @@
+<launch>
+
+  <node pkg="tf" type="static_transform_publisher" name="tf_publisher" args="0 0 0 0 0 0 1 robot1/odom robot1/base_link 100.0">
+    <remap from="tf" to="public/tf"/>
+  </node>
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_static_publisher" args="0 0 0 0 0 0 1 map robot1/odom">
+    <remap from="tf_static" to="public/tf_static"/>
+  </node>
+
+  <node pkg="tf2_relay" type="tf2_relay_node" name="transform_relay" output="screen">
+
+    <rosparam>
+      from: public
+
+      relay_frequency: 1.0
+
+      tf_prefix: robot1
+      #prefix_operation: remove
+      prefix_operation: selective_remove
+
+      global_frames:
+      - map
+      - dummy_test
+
+    </rosparam>
+
+  </node>
+
+</launch>

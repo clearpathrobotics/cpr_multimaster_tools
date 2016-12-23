@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (prorietary)
+
+\file      multimaster_robot.launch
+\authors   Paul Bovbel <pbovbel@clearpath.ai>
+\copyright Copyright (c) 2015, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, is not permitted without the
+express permission of Clearpath Robotics.
+-->
+<launch>
+
+  <!-- robot_name needs to be a unique name for this robot -->
+  <arg name="robot_name" default="$(anon robot)"/>
+  <arg name="public_interface" default="$(find multimaster_launch)/config/empty.yaml"/>
+  <arg name="gazebo_interface" default="$(find multimaster_launch)/config/empty.yaml"/>
+  <arg name="simulation" default="$(optenv ROBOT_SIMULATION false)"/>
+  <arg name="resync_on_reconnect" default="$(optenv MULTIMASTER_RESYNC_ON_RECONNECT false)"/>
+  <arg name="robot_multicast_discovery" default="$(optenv ROBOT_MULTICAST_DISCOVERY false)"/>
+
+  <param name="robot_name" value="$(arg robot_name)" />
+
+  <!-- Multimaster configuration for this robot. Sync all visible /public topics, as well as the /robot_name namespace from gazebo -->
+  <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" respawn="true" respawn_delay="5">
+    <rosparam subst_value="true">
+      send_mcast: $(arg robot_multicast_discovery)
+    </rosparam>
+  </node>
+  <node pkg="master_sync_fkie" type="master_sync" name="master_sync" respawn="true" respawn_delay="5">
+    <rosparam subst_value="true">
+      sync_topics:
+        - /public/$(arg robot_name)/*
+        - /public/client_heartbeat
+        - /public/nimbus/*
+        - /sim*
+      sync_services:
+        - /public/$(arg robot_name)/*
+        - /public/nimbus/*
+        - /sim*
+      resync_on_reconnect: $(arg resync_on_reconnect)
+    </rosparam>
+  </node>
+
+  <!-- Public interface configuration for message_relay -->
+  <rosparam file="$(arg public_interface)" command="load"/>
+  <rosparam subst_value="true">
+    import_relay:
+      from: /public/$(arg robot_name)
+      tf_prefix: $(arg robot_name)
+      prefix_operation: remove
+      global_frames:
+        - map
+        - world
+
+    export_relay:
+      to: /public/$(arg robot_name)
+      tf_prefix: $(arg robot_name)
+      prefix_operation: add
+      global_frames:
+        - map
+        - world
+
+    tf2_relay:
+      to: /public
+      tf_prefix: $(arg robot_name)
+      prefix_operation: add
+
+      throttle_frequency: 10.0
+      global_frames:
+        - map
+        - world
+  </rosparam>
+
+  <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_robot_heartbeat_relay" required="true">
+    <rosparam>
+      to: /public
+      topics:
+        - topic: robot_heartbeat
+          type: multimaster_msgs/SystemHeartbeat
+          latch: true
+    </rosparam>
+  </node>
+
+  <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_import_relay" respawn="true" respawn_delay="5" >
+    <param name="parameter_namespace" value="import_relay"/>
+  </node>
+
+  <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_export_relay" respawn="true" respawn_delay="5" >
+    <param name="parameter_namespace" value="export_relay"/>
+  </node>
+
+  <!-- Republish TFs -->
+  <node pkg="tf2_relay" type="tf2_relay_node" name="$(arg robot_name)_tf_relay" respawn="true" respawn_delay="5" >
+    <param name="parameter_namespace" value="tf2_relay"/>
+  </node>
+
+  <group if="$(arg simulation)">
+    <!-- Use simulation clock -->
+    <param name="/use_sim_time" value="true" />
+
+    <!-- Gazebo interface configuration for message_relay -->
+    <rosparam file="$(arg gazebo_interface)" command="load"/>
+    <rosparam subst_value="true">
+      from_sim:
+        from: /sim/$(arg robot_name)
+
+      to_sim:
+        to: /sim/$(arg robot_name)
+
+      clock_relay:
+        from: sim
+        clock_relay_type: sink
+    </rosparam>
+
+    <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_import_from_sim_relay" required="true" >
+      <param name="parameter_namespace" value="from_sim"/>
+    </node>
+
+    <node pkg="message_relay" type="message_relay_node" name="$(arg robot_name)_export_to_sim_relay" required="true" >
+      <param name="parameter_namespace" value="to_sim"/>
+    </node>
+
+    <!-- Republish simulator clock -->
+    <node pkg="clock_relay" type="clock_relay_node" name="$(arg robot_name)_clock_relay" required="true" >
+      <param name="parameter_namespace" value="clock_relay"/>
+    </node>
+
+  </group>
+
+</launch>

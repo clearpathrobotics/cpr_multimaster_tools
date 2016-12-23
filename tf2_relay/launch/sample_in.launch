@@ -1,0 +1,23 @@
+<launch>
+
+  <node pkg="tf" type="static_transform_publisher" name="tf_publisher" args="0 0 0 0 0 0 1 odom base_link 100.0"/>
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_static_publisher" args="0 0 0 0 0 0 1 map odom"/>
+
+  <node pkg="tf2_relay" type="tf2_relay_node" name="transform_relay" output="screen">
+    <rosparam>
+      to: public
+
+      relay_frequency: 1.0
+
+      tf_prefix: robot1
+      prefix_operation: add
+
+      global_frames:
+      - map
+      - dummy_test
+
+    </rosparam>
+  </node>
+
+</launch>
