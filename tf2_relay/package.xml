@@ -5,6 +5,7 @@
   <description>Specialization of message_relay for tf2</description>
 
   <maintainer email="pbovbel@clearpath.ai">Paul Bovbel</maintainer>
+  <maintainer email="tbaltovski@clearpathrobotics.com">Tony Baltovski</maintainer>
 
   <license>BSD</license>
 

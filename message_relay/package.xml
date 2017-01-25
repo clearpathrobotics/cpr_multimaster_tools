@@ -4,6 +4,7 @@
   <description>Package to programmatically spawn message, service, and action relays. To add support for a message/service dependency, please add to the build dependencies in package.xml and CMakeLists.txt</description>
 
   <maintainer email="pbovbel@clearpath.ai">Paul Bovbel</maintainer>
+  <maintainer email="tbaltovski@clearpathrobotics.com">Tony Baltovski</maintainer>
 
   <license>BSD</license>
 

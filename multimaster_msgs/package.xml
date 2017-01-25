@@ -5,6 +5,7 @@
   <description>The multimaster_msgs package</description>
 
   <maintainer email="pbovbel@clearpath.ai">Paul Bovbel</maintainer>
+  <maintainer email="tbaltovski@clearpathrobotics.com">Tony Baltovski</maintainer>
 
   <license>BSD</license>
 
