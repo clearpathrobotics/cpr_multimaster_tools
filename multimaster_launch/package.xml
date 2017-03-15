@@ -22,7 +22,6 @@
   <exec_depend>tf2_relay</exec_depend>
 
   <test_depend>roslaunch</test_depend>
-  <test_depend>roslint</test_depend>
 
   <export>
   </export>
