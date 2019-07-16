@@ -1,6 +1,6 @@
 <package format="2">
   <name>message_relay</name>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <description>Package to programmatically spawn message, service, and action relays. To add support for a message/service dependency, please add to the build dependencies in package.xml and CMakeLists.txt</description>
 
   <maintainer email="pbovbel@clearpath.ai">Paul Bovbel</maintainer>

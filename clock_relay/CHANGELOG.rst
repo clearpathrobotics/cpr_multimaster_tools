@@ -2,8 +2,8 @@
 Changelog for package clock_relay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2019-07-16)
+------------------
 * Updated maintainers.
 * Contributors: Tony Baltovski
 

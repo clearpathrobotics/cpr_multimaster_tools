@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>clock_relay</name>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <description>Specialization of message_relay for clock</description>
 
   <maintainer email="pbovbel@clearpathrobotics.com">Paul Bovbel</maintainer>

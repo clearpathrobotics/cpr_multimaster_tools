@@ -2,8 +2,8 @@
 Changelog for package cpr_multimaster_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2019-07-16)
+------------------
 * Updated maintainers.
 * Contributors: Tony Baltovski
 
